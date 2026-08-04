@@ -1,14 +1,14 @@
 import { Routes } from '@angular/router';
-import { CadastroClienteComponent } from './components/cadastro-cliente/cadastro-cliente';
-import { ListaClientesComponent } from './components/lista-clientes/lista-clientes';
+import { CadastroCliente } from './components/cadastro-cliente/cadastro-cliente';
+import { ListaClientes } from './components/lista-clientes/lista-clientes';
 
 export const routes: Routes = [
   {
     path: '',
-    component: CadastroClienteComponent
+    component: CadastroCliente
   },
   {
     path: 'clientes',
-    component: ListaClientesComponent
+    component: ListaClientes
   }
 ];

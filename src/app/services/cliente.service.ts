@@ -21,15 +21,14 @@ export class ClienteService {
     this.clientes = this.clientes.filter(c => c.id !== id);
   }
 
-  buscarPorId(id: number): Cliente | undefined {
-    return this.clientes.find(c => c.id === id);
-  }
-
   atualizar(cliente: Cliente): void {
-    const index = this.clientes.findIndex(c => c.id === cliente.id);
 
-    if (index !== -1) {
-      this.clientes[index] = cliente;
+    const indice = this.clientes.findIndex(c => c.id === cliente.id);
+
+    if (indice >= 0) {
+      this.clientes[indice] = cliente;
     }
+
   }
+
 }
