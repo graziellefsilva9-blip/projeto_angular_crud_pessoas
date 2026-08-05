@@ -20,6 +20,8 @@ export class CadastroCliente {
   formulario: FormGroup;
 
   clientes: Cliente[] = [];
+  
+  idClienteEdicao: number | null = null;
 
   ufs = [
     'SE',
@@ -98,34 +100,42 @@ export class CadastroCliente {
 
   salvar() {
 
-    if (this.formulario.invalid) {
+  if (this.formulario.invalid) {
+    this.formulario.markAllAsTouched();
+    return;
+  }
 
-      this.formulario.markAllAsTouched();
-
-      return;
-
-    }
+  if (this.idClienteEdicao !== null) {
 
     const cliente: Cliente = {
-
-      id: Date.now(),
-
+      id: this.idClienteEdicao,
       ...this.formulario.value
+    };
 
+    this.clienteService.atualizar(cliente);
+
+    this.idClienteEdicao = null;
+
+  } else {
+
+    const cliente: Cliente = {
+      id: Date.now(),
+      ...this.formulario.value
     };
 
     this.clienteService.salvar(cliente);
 
-    console.log(this.clienteService.listar());
+  }
 
-    this.atualizarLista();
+  console.log(this.clienteService.listar());
 
-    this.formulario.reset();
+  this.atualizarLista();
 
-    this.listaMunicipios = [];
+  this.formulario.reset();
 
-    }
+  this.listaMunicipios = [];
 
+}
   atualizarLista() {
 
     this.clientes = this.clienteService.listar();
@@ -139,6 +149,22 @@ export class CadastroCliente {
     this.atualizarLista();
 
   }
+
+  editar(cliente: Cliente) {
+
+    this.formulario.patchValue({
+      nome: cliente.nome,
+      email: cliente.email,
+      cpf: cliente.cpf,
+      dataNascimento: cliente.dataNascimento,
+      uf: cliente.uf,
+      municipio: cliente.municipio
+    });
+  
+    this.idClienteEdicao = cliente.id;
+  
+  }
+  
 
   carregarMunicipios() {
 

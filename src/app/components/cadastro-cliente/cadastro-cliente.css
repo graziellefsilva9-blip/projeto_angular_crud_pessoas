@@ -133,6 +133,15 @@ button{
 
 }
 
+.editar{
+    background: #0d6efd;
+    margin-left:10px;
+}
+
+.editar:hover{
+    background:#350ba7;
+}
+
 .limpar{
 
     background:#e74c3c;

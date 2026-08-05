@@ -6,4 +6,4 @@ export interface Cliente {
   dataNascimento: string;
   uf: string;
   municipio: string;
-}
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

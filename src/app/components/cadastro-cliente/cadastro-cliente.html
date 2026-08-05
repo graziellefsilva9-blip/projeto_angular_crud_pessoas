@@ -122,8 +122,15 @@
           <td>{{ cliente.uf }}</td>
           <td>{{ cliente.municipio }}</td>
 
-          <td>
+          <td class="acoes">
 
+            <button
+              type="button"
+              class="editar"
+              (click)="editar(cliente)">
+              Editar
+            </button>
+            
             <button
               type="button"
               class="limpar"
