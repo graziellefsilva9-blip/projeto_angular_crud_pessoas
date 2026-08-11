@@ -1,1 +1,56 @@
-<p>lista-clientes works!</p>
+<section class="card">
+
+    <h2>Clientes Cadastrados</h2>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>CPF</th>
+          <th>UF</th>
+          <th>Município</th>
+          <th>Ações</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let cliente of clientes">
+
+          <td>{{ cliente.nome }}</td>
+          <td>{{ cliente.email }}</td>
+          <td>{{ cliente.cpf }}</td>
+          <td>{{ cliente.uf }}</td>
+          <td>{{ cliente.municipio }}</td>
+
+          <td class="acoes">
+
+            <button
+              type="button"
+              class="editar"
+              (click)="editar(cliente)">
+              Editar
+            </button>
+            
+            <button
+              type="button"
+              class="limpar"
+              (click)="excluir(cliente.id)">
+              Excluir
+            </button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </section>

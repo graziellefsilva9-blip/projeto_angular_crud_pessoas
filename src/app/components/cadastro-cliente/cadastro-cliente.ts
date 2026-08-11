@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {FormBuilder,FormGroup,ReactiveFormsModule,Validators} from '@angular/forms';
 
 import { ClienteService } from '../../services/cliente.service';
 import { Cliente } from '../../models/cliente';
 
+import { IbgeService } from '../../services/ibge.service';
+import { Estado, Municipio } from '../../models/ibge.model';
+
 @Component({
   selector: 'app-cadastro-cliente',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule,ReactiveFormsModule],
   templateUrl: './cadastro-cliente.html',
   styleUrl: './cadastro-cliente.css'
 })
@@ -20,69 +20,30 @@ export class CadastroCliente {
   formulario: FormGroup;
 
   clientes: Cliente[] = [];
-  
+
   idClienteEdicao: number | null = null;
 
-  ufs = [
-    'SE',
-    'BA',
-    'SP',
-    'RJ',
-    'MG'
-    ];
-    
-    municipios:any = {
-    
-    SE:[
-    'Aracaju',
-    'Lagarto',
-    'Itabaiana',
-    'Estância',
-    'Nossa Senhora do Socorro'
-    ],
-    
-    BA:[
-    'Salvador',
-    'Feira de Santana',
-    'Ilhéus',
-    'Vitória da Conquista'
-    ],
-    
-    SP:[
-    'São Paulo',
-    'Campinas',
-    'Santos',
-    'Sorocaba'
-    ],
-    
-    RJ:[
-    'Rio de Janeiro',
-    'Niterói',
-    'Petrópolis',
-    'Campos'
-    ],
-    
-    MG:[
-    'Belo Horizonte',
-    'Uberlândia',
-    'Juiz de Fora',
-    'Montes Claros'
-    ]
-    
-    };
-    
-    listaMunicipios:string[]=[];
+  // Dados vindos da API do IBGE
+  estados: Estado[] = [];
+  municipios: Municipio[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private ibgeService: IbgeService
   ) {
 
     this.formulario = this.fb.group({
 
-      nome: ['', [Validators.required, Validators.minLength(3)]],
+      nome: ['', [
+        Validators.required,
+        Validators.minLength(3)
+      ]],
 
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [
+        Validators.required,
+        Validators.email
+      ]],
 
       cpf: ['', Validators.required],
 
@@ -96,46 +57,90 @@ export class CadastroCliente {
 
     this.atualizarLista();
 
+    // Carrega os estados da API do IBGE
+    this.carregarEstados();
+  }
+
+  carregarEstados() {
+
+    this.ibgeService.getEstados().subscribe({
+      next: (dados) => {
+        this.estados = dados;
+      },
+
+      error: (erro) => {
+        console.error('Erro ao carregar estados:', erro);
+      }
+    });
+
+  }
+
+  carregarMunicipios() {
+
+    const uf = this.formulario.get('uf')?.value;
+
+    // Limpa os municípios anteriores
+    this.municipios = [];
+
+    // Limpa o município selecionado
+    this.formulario.patchValue({
+      municipio: ''
+    });
+
+    if (!uf) {
+      return;
+    }
+
+    this.ibgeService.getMunicipiosPorUF(uf).subscribe({
+      next: (dados) => {
+        this.municipios = dados;
+      },
+
+      error: (erro) => {
+        console.error('Erro ao carregar municípios:', erro);
+      }
+    });
+
   }
 
   salvar() {
 
-  if (this.formulario.invalid) {
-    this.formulario.markAllAsTouched();
-    return;
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    if (this.idClienteEdicao !== null) {
+
+      const cliente: Cliente = {
+        id: this.idClienteEdicao,
+        ...this.formulario.value
+      };
+
+      this.clienteService.atualizar(cliente);
+
+      this.idClienteEdicao = null;
+
+    } else {
+
+      const cliente: Cliente = {
+        id: Date.now(),
+        ...this.formulario.value
+      };
+
+      this.clienteService.salvar(cliente);
+
+    }
+
+    console.log(this.clienteService.listar());
+
+    this.atualizarLista();
+
+    this.formulario.reset();
+
+    this.municipios = [];
   }
 
-  if (this.idClienteEdicao !== null) {
-
-    const cliente: Cliente = {
-      id: this.idClienteEdicao,
-      ...this.formulario.value
-    };
-
-    this.clienteService.atualizar(cliente);
-
-    this.idClienteEdicao = null;
-
-  } else {
-
-    const cliente: Cliente = {
-      id: Date.now(),
-      ...this.formulario.value
-    };
-
-    this.clienteService.salvar(cliente);
-
-  }
-
-  console.log(this.clienteService.listar());
-
-  this.atualizarLista();
-
-  this.formulario.reset();
-
-  this.listaMunicipios = [];
-
-}
   atualizarLista() {
 
     this.clientes = this.clienteService.listar();
@@ -160,23 +165,19 @@ export class CadastroCliente {
       uf: cliente.uf,
       municipio: cliente.municipio
     });
-  
+
     this.idClienteEdicao = cliente.id;
-  
-  }
-  
 
-  carregarMunicipios() {
+    // Carrega os municípios da UF do cliente
+    this.carregarMunicipios();
 
-    const uf = this.formulario.get('uf')?.value;
-  
-    this.listaMunicipios = this.municipios[uf] || [];
-  
-    this.formulario.patchValue({
-      municipio: ''
+    // Mantém o município salvo após carregar a lista
+    setTimeout(() => {
+      this.formulario.patchValue({
+        municipio: cliente.municipio
+      });
     });
-  
+
   }
-  
 
 }
