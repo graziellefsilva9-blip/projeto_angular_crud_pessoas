@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 
 import { ClienteService } from '../../services/cliente.service';
@@ -19,7 +19,8 @@ export class ListaClientes {
   clientes: Cliente[] = [];
 
   constructor(
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private router: Router
   ) {
     this.atualizarLista();
   }
@@ -29,8 +30,12 @@ export class ListaClientes {
   }
 
   editar(cliente: Cliente): void {
-    console.log('Cliente selecionado para edição:', cliente);
-  }
+    this.router.navigate(['/'], {
+      state: {
+        cliente: cliente
+      }
+  });
+}
 
   excluir(id: number): void {
     this.clienteService.excluir(id);

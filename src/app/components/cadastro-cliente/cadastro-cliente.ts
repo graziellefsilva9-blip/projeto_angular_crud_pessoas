@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 
 import { CommonModule } from '@angular/common';
@@ -33,7 +33,8 @@ export class CadastroCliente {
   constructor(
     private fb: FormBuilder,
     private clienteService: ClienteService,
-    private ibgeService: IbgeService
+    private ibgeService: IbgeService,
+    private router: Router
   ) {
 
     this.formulario = this.fb.group({
@@ -62,7 +63,17 @@ export class CadastroCliente {
 
     // Carrega os estados da API do IBGE
     this.carregarEstados();
+
+     // RECEBE O CLIENTE ENVIADO PELA TELA DE LISTA
+  const navigation = this.router.getCurrentNavigation();
+
+  const cliente = navigation?.extras.state?.['cliente'] as Cliente;
+
+  if (cliente) {
+    this.editar(cliente);
   }
+  }
+  
 
   carregarEstados() {
 
