@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+
 import { CommonModule } from '@angular/common';
 import {FormBuilder,FormGroup,ReactiveFormsModule,Validators} from '@angular/forms';
 
@@ -11,7 +14,7 @@ import { Estado, Municipio } from '../../models/ibge.model';
 @Component({
   selector: 'app-cadastro-cliente',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule, RouterLink],
   templateUrl: './cadastro-cliente.html',
   styleUrl: './cadastro-cliente.css'
 })

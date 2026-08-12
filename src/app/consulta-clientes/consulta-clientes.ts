@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ClienteService } from '../../services/cliente.service';
-import { Cliente } from '../../models/cliente';
+import { ClienteService } from '../services/cliente.service';
+import { Cliente } from '../models/cliente';
 
 @Component({
   selector: 'app-consulta-clientes',

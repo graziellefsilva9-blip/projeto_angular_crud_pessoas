@@ -1,56 +1,96 @@
-<section class="card">
+<div class="container">
+
+  <header>
+
+    <h1>Clientes Cadastrados</h1>
+
+    <nav>
+      <a routerLink="/" class="voltar">
+        Voltar
+      </a>
+    </nav>
+
+  </header>
+
+  <section class="card">
 
     <h2>Clientes Cadastrados</h2>
 
-    <table>
+    <div class="tabela-container">
 
-      <thead>
+      <table>
 
-        <tr>
+        <thead>
 
-          <th>Nome</th>
-          <th>E-mail</th>
-          <th>CPF</th>
-          <th>UF</th>
-          <th>Município</th>
-          <th>Ações</th>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>CPF</th>
+            <th>UF</th>
+            <th>Município</th>
+            <th>Ações</th>
+          </tr>
 
-        </tr>
+        </thead>
 
-      </thead>
+        <tbody>
 
-      <tbody>
+          <tr *ngFor="let cliente of clientes">
 
-        <tr *ngFor="let cliente of clientes">
+            <td>
+              {{ cliente.nome }}
+            </td>
 
-          <td>{{ cliente.nome }}</td>
-          <td>{{ cliente.email }}</td>
-          <td>{{ cliente.cpf }}</td>
-          <td>{{ cliente.uf }}</td>
-          <td>{{ cliente.municipio }}</td>
+            <td>
+              {{ cliente.email }}
+            </td>
 
-          <td class="acoes">
+            <td>
+              {{ cliente.cpf }}
+            </td>
 
-            <button
-              type="button"
-              class="editar"
-              (click)="editar(cliente)">
-              Editar
-            </button>
-            
-            <button
-              type="button"
-              class="limpar"
-              (click)="excluir(cliente.id)">
-              Excluir
-            </button>
+            <td>
+              {{ cliente.uf }}
+            </td>
 
-          </td>
+            <td>
+              {{ cliente.municipio }}
+            </td>
 
-        </tr>
+            <td class="acoes">
 
-      </tbody>
+              <button
+                type="button"
+                class="editar"
+                (click)="editar(cliente)">
+                Editar
+              </button>
 
-    </table>
+              <button
+                type="button"
+                class="excluir"
+                (click)="excluir(cliente.id)">
+                Excluir
+              </button>
+
+            </td>
+
+          </tr>
+
+          <tr *ngIf="clientes.length === 0">
+
+            <td colspan="6" class="sem-clientes">
+              Nenhum cliente cadastrado.
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   </section>
+
+</div>
